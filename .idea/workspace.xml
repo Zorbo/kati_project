@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bf828e43-0ea6-46ae-8c76-fc012342013b" name="Default" comment="" />
+    <list default="true" id="bf828e43-0ea6-46ae-8c76-fc012342013b" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -158,7 +160,7 @@
       <option name="presentableId" value="Default" />
       <updated>1540127845416</updated>
       <workItem from="1540127849605" duration="809000" />
-      <workItem from="1540128747236" duration="240000" />
+      <workItem from="1540128747236" duration="490000" />
     </task>
     <servers />
   </component>
