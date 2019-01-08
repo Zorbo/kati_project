@@ -1,25 +1,21 @@
 package process;
 
-import entity.Student;
+import entity.StudentInfo;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class XlsxBase {
 
-    private Map<String, Student> xlsxData = new HashMap<>();
+    private Map<String, StudentInfo> xlsxData = new HashMap<>();
 
     public void readXlsx(String myDirectory) throws IOException {
         InputStream fileInputStream;
@@ -49,7 +45,6 @@ public class XlsxBase {
         String name;
         String classNumber;
         String reason;
-        Random rand = new Random();
         DataFormatter formatter = new DataFormatter();
 
         // sheet.getRow(0);  why?
@@ -66,17 +61,58 @@ public class XlsxBase {
             name = row.getCell(1).getStringCellValue();
             classNumber = row.getCell(2).getStringCellValue();
             reason = row.getCell(3).getStringCellValue();
+            String studentKey = name + "," + classNumber + "," + time;
 
-            String studentKey = row.getCell(1).getStringCellValue()
-                    + "," + row.getCell(2).getStringCellValue() + "," + rand.nextInt(1000000) + 1;
-            Student student = new Student(time, name, classNumber, reason);
+            StudentInfo studentInfo = new StudentInfo(time, name, classNumber, reason);
 
-            xlsxData.put(studentKey, student);
+            xlsxData.put(studentKey, studentInfo);
         }
     }
 
-    public void writeXlsx() {
-        Map<String, Student> map = new TreeMap<>(xlsxData);
+    public void writeXlsx() throws IOException {
+
+        String[] columns = {"Kártya lehúzása", "Tanuló neve", "Osztálya", "Késés oka"};
+        Map<String, StudentInfo> map = new TreeMap<>(xlsxData);
+        Workbook workbook = new XSSFWorkbook();
+        CreationHelper creationHelper = workbook.getCreationHelper();
+        Sheet sheet = workbook.createSheet("Munka1");
+
+        // Create header
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short) 14);
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        headerCellStyle.setFont(headerFont);
+
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < columns.length; i++){
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(columns[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+
+        // Create Other rows and cells with student data
+        int rowNum = 1;
+        for (StudentInfo studentInfo : map.values()){
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(studentInfo.getTime());
+            row.createCell(1).setCellValue(studentInfo.getName());
+            row.createCell(2).setCellValue(studentInfo.getClassNumber());
+            row.createCell(3).setCellValue(studentInfo.getReason());
+        }
+
+        // Resize all columns to fit the content size
+        for(int i = 0; i < columns.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        // Write the output to a file
+        FileOutputStream fileOut = new FileOutputStream("C:\\Users\\tamas.a.kiss\\Desktop\\Kati_Project\\xlsx_data\\October\\poi-generated-file.xlsx");
+        workbook.write(fileOut);
+        fileOut.close();
+
+        // Closing the workbook
+        workbook.close();
 
     }
 
@@ -84,9 +120,8 @@ public class XlsxBase {
      * For testing
      * @return test result
      */
-    public Map<String, Student> getXlsxData() {
-        Map<String, Student> map = new TreeMap<>(xlsxData);
-        return map;
+    public Map<String, StudentInfo> getXlsxData() {
+        return new TreeMap<>(xlsxData);
     }
 
     public void stuff() {
