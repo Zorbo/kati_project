@@ -78,7 +78,7 @@ public class XlsxBase {
             name = row.getCell(1).getStringCellValue();
             classNumber = row.getCell(2).getStringCellValue();
             reason = row.getCell(3).getStringCellValue();
-            String studentKey = name + "," + classNumber + "," + time;
+            String studentKey = classNumber + "," + name + "," + time;
             StudentInfo studentInfo = new StudentInfo(time, name, classNumber, reason);
             xlsxData.put(studentKey, studentInfo);
         }

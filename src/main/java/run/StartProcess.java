@@ -10,7 +10,7 @@ public class StartProcess {
     private static void createAndShowGUI() {
 
         JFrame.setDefaultLookAndFeelDecorated(true);
-        JFrame frame = new JFrame("Bundle Example");
+        JFrame frame = new JFrame("Ho vegi osszesito");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel pane = new JPanel(new GridLayout(0, 1));
         JButton button = new JButton("Start!");
@@ -28,7 +28,7 @@ public class StartProcess {
                 e.printStackTrace();
             }
         });
-        JLabel label = new JLabel("Example for Bundling JRE with Java Class");
+        JLabel label = new JLabel("Havi összesítés elkészítése");
         pane.add(label);
         pane.setBorder(BorderFactory.createEmptyBorder(200, 200, 50, 200));
         frame.getContentPane().add(pane);
