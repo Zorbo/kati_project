@@ -34,13 +34,13 @@ public class XlsxBase {
     private String directory = "";
     private String year = "";
 
-    public void readXlsx(String year, String myDirectory) throws IOException {
+    public void readXlsx(String year, String month) throws IOException {
         InputStream fileInputStream;
         XSSFWorkbook xssfWorkbook;
         XSSFSheet sheet;
 
 // Put these loc in a try-catch block
-        File dir = new File("C:\\Munka\\" + year + myDirectory);
+        File dir = new File("C:\\Munka\\" + year + month);
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
             for (File child : directoryListing) {
@@ -51,7 +51,7 @@ public class XlsxBase {
                 iterateXlsRow(sheet);
             }
         }
-        this.directory = myDirectory;
+        this.directory = month;
         this.year = year;
     }
 
