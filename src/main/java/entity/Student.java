@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class StudentInfo {
+public class Student {
 
     private String time;
 
@@ -15,4 +15,5 @@ public class StudentInfo {
 
     private String reason;
 
+    private String key;
 }

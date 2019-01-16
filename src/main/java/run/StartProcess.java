@@ -1,14 +1,24 @@
 package run;
 import process.XlsxBase;
 
-import javax.swing.*;
-import java.awt.*;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JOptionPane;
+import javax.swing.BorderFactory;
+import javax.swing.SwingUtilities;
+import java.awt.GridLayout;
 import java.io.IOException;
 
 public class StartProcess {
 
+    /**
+     * Create GUI
+     */
     private static void createAndShowGUI() {
-
         // Create the panel
         JFrame.setDefaultLookAndFeelDecorated(true);
         JFrame frame = new JFrame("Ho vegi osszesito");
@@ -16,15 +26,11 @@ public class StartProcess {
         JPanel pane = new JPanel(new GridLayout(1, 3));
         JButton button = new JButton("Start!");
 
-
         // Set input fields
-
         JLabel yearLabel = new JLabel("Év: ", JLabel.TRAILING);
         JLabel monthLabel = new JLabel("Hónap: ", JLabel.TRAILING);
-
         JTextField year = new JTextField(10 );
         JTextField month = new JTextField(10);
-
         yearLabel.setLabelFor(year);
         monthLabel.setLabelFor(month);
         pane.add(yearLabel);
