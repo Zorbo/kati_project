@@ -2,15 +2,8 @@ package process;
 
 import entity.Student;
 
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -30,73 +23,99 @@ import java.util.Comparator;
 public class XlsxBase {
 
     private List<Student> xlsxDataList = new Vector<>();
+    private StringBuilder message = new StringBuilder();
     private String directory = "";
     private String year = "";
 
     /**
      * Read the files in the specific folder
-     * @param year The year for the folder
+     *
+     * @param year  The year for the folder
      * @param month The month of the folder
      * @throws IOException If something goes wrong
      */
-    public void readXlsx(String year, String month) throws IOException {
+    public String readXlsx(String year, String month) throws IOException {
         XSSFWorkbook xssfWorkbook;
         XSSFSheet sheet;
-        File dir = new File("C:\\Munka\\" + year + month);
+        String message = "";
+        File dir = new File("C:\\Munka\\" + year.trim() + month.trim());
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
-            for (File child : directoryListing) {
-                try(InputStream fileInputStream = new FileInputStream(child)) {
+            for (File xlsxFile : directoryListing) {
+                try (InputStream fileInputStream = new FileInputStream(xlsxFile)) {
                     xssfWorkbook = new XSSFWorkbook(fileInputStream);
                     sheet = xssfWorkbook.getSheetAt(0);
-                    iterateXlsRow(sheet);
+                    message = iterateXlsRow(sheet);
+                } catch (NullPointerException e) {
+                    return "Hiba történt!";
                 }
             }
         }
         this.directory = month;
         this.year = year;
+        return message;
     }
 
     /**
      * Iterate through the sheet for Student objects
+     *
      * @param sheet the sheet what we would like to read
      */
-    private void iterateXlsRow(XSSFSheet sheet) {
+    private String iterateXlsRow(XSSFSheet sheet) {
         Iterator rowIterator;
         XSSFRow row;
         rowIterator = sheet.rowIterator();
         String time;
-        String name;
+        String StudentName;
         String classNumber;
         String reason;
         DataFormatter formatter = new DataFormatter();
 
         while (rowIterator.hasNext()) {
             row = (XSSFRow) rowIterator.next();
-            if (row.getCell(0) == null
-                    || row.getCell(1) == null
-                    || row.getCell(2) == null
-                    || row.getCell(3) == null) {
-                System.out.println("One of the cells are contains no data in row: " + row.getRowNum());
+                if (isEmptyCell(row.getCell(0))) {
+                time = "NINCS ADAT";
+                message.append("A ").append(row.getRowNum() + 1).append(" sorban üres volt egy cella").append("\n");
+            } else {
+                time = formatter.formatCellValue(row.getCell(0)).trim();
             }
-            time = formatter.formatCellValue(row.getCell(0));
-            name = row.getCell(1).getStringCellValue();
-            classNumber = row.getCell(2).getStringCellValue();
-            reason = row.getCell(3).getStringCellValue();
-            Student student = new Student(time, name, classNumber, reason, classNumber + name);
+            if (isEmptyCell(row.getCell(1))) {
+                StudentName = "NINCS ADAT";
+                message.append("A ").append(row.getRowNum() + 1).append(" sorban üres volt egy cella").append("\n");
+            } else {
+                StudentName = row.getCell(1).getStringCellValue().trim();
+            }
+            if (isEmptyCell(row.getCell(2))) {
+                classNumber = "NINCS ADAT";
+                message.append("A ").append(row.getRowNum() + 1).append(" sorban üres volt egy cella").append("\n");
+            } else {
+                classNumber = row.getCell(2).getStringCellValue().trim();
+            }
+            if (isEmptyCell(row.getCell(3))) {
+                reason = "NINCS ADAT";
+                message.append("A ").append(row.getRowNum() + 1).append(" sorban üres volt egy cella").append("\n");
+            } else {
+                reason = row.getCell(3).getStringCellValue().trim();
+            }
+            Student student = new Student(time, StudentName, classNumber, reason, classNumber + StudentName);
             xlsxDataList.add(student);
         }
+        return message.toString();
+    }
+
+    private boolean isEmptyCell(XSSFCell cell) {
+        return cell == null || cell.getCellTypeEnum() == CellType.BLANK;
     }
 
     /**
      * Write out the xlsx file
+     *
      * @throws IOException If writing goes wrong
      */
     public void writeXlsx() throws IOException {
         String[] columns = {"Kártya lehúzása", "Tanuló neve", "Osztálya", "Késés oka"};
         xlsxDataList.sort(Comparator.comparing(Student::getKey));
         Workbook workbook = new XSSFWorkbook();
-        CreationHelper creationHelper = workbook.getCreationHelper();
         Sheet sheet = workbook.createSheet("Munka1");
 
         // Create header

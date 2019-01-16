@@ -2,15 +2,8 @@ package run;
 import process.XlsxBase;
 
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JOptionPane;
-import javax.swing.BorderFactory;
-import javax.swing.SwingUtilities;
-import java.awt.GridLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 
 public class StartProcess {
@@ -29,8 +22,11 @@ public class StartProcess {
         // Set input fields
         JLabel yearLabel = new JLabel("Év: ", JLabel.TRAILING);
         JLabel monthLabel = new JLabel("Hónap: ", JLabel.TRAILING);
+        yearLabel.setFont(new Font("Courier",Font.PLAIN,18));
+        monthLabel.setFont(new Font("Courier",Font.PLAIN,18));
         JTextField year = new JTextField(10 );
         JTextField month = new JTextField(10);
+        XlsxBase xlsxBase = new XlsxBase();
         yearLabel.setLabelFor(year);
         monthLabel.setLabelFor(month);
         pane.add(yearLabel);
@@ -41,24 +37,20 @@ public class StartProcess {
 
         // Add the button action listener
         button.addActionListener(actionEvent -> {
-            XlsxBase xlsxBase = new XlsxBase();
             try {
                 if (year.getText().isEmpty() || month.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(frame,"Kérem adja meg az évszámot és a hónapot!");
-                    return;
                 } else {
-                    xlsxBase.readXlsx(year.getText(),month.getText());
+                    String message = xlsxBase.readXlsx(year.getText(),month.getText());
+                    xlsxBase.writeXlsx();
+                    JOptionPane.showMessageDialog(frame,message + "A file sikeresen elkészült!");
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                xlsxBase.writeXlsx();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
         JLabel label = new JLabel("Havi összesítés elkészítése");
+        label.setFont(new Font("Courier",Font.PLAIN,18));
         pane.add(label);
         pane.setBorder(BorderFactory.createEmptyBorder(200, 200, 50, 200));
         frame.getContentPane().add(pane);
@@ -68,5 +60,6 @@ public class StartProcess {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(StartProcess::createAndShowGUI);
+
     }
 }
