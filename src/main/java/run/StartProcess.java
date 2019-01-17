@@ -41,9 +41,10 @@ public class StartProcess {
                 if (year.getText().isEmpty() || month.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(frame,"Kérem adja meg az évszámot és a hónapot!");
                 } else {
-                    String message = xlsxBase.readXlsx(year.getText(),month.getText());
+                    xlsxBase.readXlsx(year.getText(),month.getText());
                     xlsxBase.writeXlsx();
-                    JOptionPane.showMessageDialog(frame,message + "A file sikeresen elkészült!");
+                    JOptionPane.showMessageDialog(frame,"A file sikeresen elkészült!");
+                    xlsxBase.resetxlsxDataList();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,6 +61,5 @@ public class StartProcess {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(StartProcess::createAndShowGUI);
-
     }
 }

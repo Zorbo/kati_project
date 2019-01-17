@@ -23,7 +23,6 @@ import java.util.Comparator;
 public class XlsxBase {
 
     private List<Student> xlsxDataList = new Vector<>();
-    private StringBuilder message = new StringBuilder();
     private String directory = "";
     private String year = "";
 
@@ -34,10 +33,9 @@ public class XlsxBase {
      * @param month The month of the folder
      * @throws IOException If something goes wrong
      */
-    public String readXlsx(String year, String month) throws IOException {
+    public void readXlsx(String year, String month) throws IOException {
         XSSFWorkbook xssfWorkbook;
         XSSFSheet sheet;
-        String message = "";
         File dir = new File("C:\\Munka\\" + year.trim() + month.trim());
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
@@ -45,15 +43,14 @@ public class XlsxBase {
                 try (InputStream fileInputStream = new FileInputStream(xlsxFile)) {
                     xssfWorkbook = new XSSFWorkbook(fileInputStream);
                     sheet = xssfWorkbook.getSheetAt(0);
-                    message = iterateXlsRow(sheet);
+                    iterateXlsRow(sheet);
                 } catch (NullPointerException e) {
-                    return "Hiba történt!";
+                    System.out.println("Hiba történt!");
                 }
             }
         }
         this.directory = month;
         this.year = year;
-        return message;
     }
 
     /**
@@ -61,7 +58,7 @@ public class XlsxBase {
      *
      * @param sheet the sheet what we would like to read
      */
-    private String iterateXlsRow(XSSFSheet sheet) {
+    private void iterateXlsRow(XSSFSheet sheet) {
         Iterator rowIterator;
         XSSFRow row;
         rowIterator = sheet.rowIterator();
@@ -75,32 +72,27 @@ public class XlsxBase {
             row = (XSSFRow) rowIterator.next();
                 if (isEmptyCell(row.getCell(0))) {
                 time = "NINCS ADAT";
-                message.append("A ").append(row.getRowNum() + 1).append(" sorban üres volt egy cella").append("\n");
             } else {
                 time = formatter.formatCellValue(row.getCell(0)).trim();
             }
             if (isEmptyCell(row.getCell(1))) {
                 StudentName = "NINCS ADAT";
-                message.append("A ").append(row.getRowNum() + 1).append(" sorban üres volt egy cella").append("\n");
             } else {
                 StudentName = row.getCell(1).getStringCellValue().trim();
             }
             if (isEmptyCell(row.getCell(2))) {
                 classNumber = "NINCS ADAT";
-                message.append("A ").append(row.getRowNum() + 1).append(" sorban üres volt egy cella").append("\n");
             } else {
                 classNumber = row.getCell(2).getStringCellValue().trim();
             }
             if (isEmptyCell(row.getCell(3))) {
                 reason = "NINCS ADAT";
-                message.append("A ").append(row.getRowNum() + 1).append(" sorban üres volt egy cella").append("\n");
             } else {
                 reason = row.getCell(3).getStringCellValue().trim();
             }
             Student student = new Student(time, StudentName, classNumber, reason, classNumber + StudentName);
             xlsxDataList.add(student);
         }
-        return message.toString();
     }
 
     private boolean isEmptyCell(XSSFCell cell) {
@@ -150,6 +142,13 @@ public class XlsxBase {
         fileOut.close();
         // Closing the workbook
         workbook.close();
+    }
+
+    /**
+     * Clear the data in the List
+     */
+    public void resetxlsxDataList() {
+        this.xlsxDataList.clear();
     }
 
     /**
