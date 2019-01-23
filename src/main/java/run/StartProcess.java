@@ -24,8 +24,8 @@ public class StartProcess {
         JLabel monthLabel = new JLabel("Hónap: ", JLabel.TRAILING);
         yearLabel.setFont(new Font("Courier",Font.PLAIN,18));
         monthLabel.setFont(new Font("Courier",Font.PLAIN,18));
-        JTextField year = new JTextField(10 );
-        JTextField month = new JTextField(10);
+        JTextField year = new JTextField(5 );
+        JTextField month = new JTextField(5);
         XlsxBase xlsxBase = new XlsxBase();
         yearLabel.setLabelFor(year);
         monthLabel.setLabelFor(month);
@@ -53,7 +53,7 @@ public class StartProcess {
         JLabel label = new JLabel("Havi összesítés elkészítése");
         label.setFont(new Font("Courier",Font.PLAIN,18));
         pane.add(label);
-        pane.setBorder(BorderFactory.createEmptyBorder(200, 200, 50, 200));
+        pane.setBorder(BorderFactory.createEmptyBorder(200, 20, 50, 50));
         frame.getContentPane().add(pane);
         frame.pack();
         frame.setVisible(true);
